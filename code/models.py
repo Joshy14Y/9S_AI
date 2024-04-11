@@ -10,7 +10,7 @@ class ModelLoader:
 
     @staticmethod
     def load_models():
-        directory_path = r"..\..\AI_Project_P1\models"
+        directory_path = r"..\..\9S_AI\models"
         loaded_models = {}
         for filename in os.listdir(directory_path):
             if filename.endswith('.pkl'):
