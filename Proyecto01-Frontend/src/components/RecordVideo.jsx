@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { CameraButton } from "./CameraButton"
+import { sendImage } from "../services/camera.service"
 
 export const RecordVideo = ({ children }) => {
     const videoRef = useRef()
@@ -53,17 +54,9 @@ export const RecordVideo = ({ children }) => {
             canvas.height = videoRef.current.videoHeight;
             ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
             const dataUrl = canvas.toDataURL('image/png');
-            sendImageToServer(dataUrl)
+            sendImage(dataUrl)
         }
     }
-
-    const sendImageToServer = async (dataUrl) => {
-        try {
-            const imageBytes = dataUrl.split(',')[1];
-        } catch (error) {
-            console.error(`Error de conexión al servidor: ${error}`);
-        }
-    };
 
     return (
         <div className="flex flex-col justify-center items-center mt-10 w-1/2">
@@ -79,7 +72,7 @@ export const RecordVideo = ({ children }) => {
             </button> */}
             <div className="flex gap-10 items-start">
                 <div className="flex flex-col items-end">
-                    <video crossOrigin="anonymous"  ref={videoRef} autoPlay></video>
+                    <video crossOrigin="anonymous" width={400} ref={videoRef} autoPlay></video>
                     {children}
                 </div>
             </div>

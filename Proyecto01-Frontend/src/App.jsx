@@ -9,7 +9,7 @@ const App = () => {
     const adjustPlaneForScreenSize = () => {
         let screenScale, screenPosition;
 
-        if (window.innerWidth < 380) {j
+        if (window.innerWidth < 380) {
             screenScale = [1.5, 1.5, 1.5];
             screenPosition = [0, -2, 0];
         }

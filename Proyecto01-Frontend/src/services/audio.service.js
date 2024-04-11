@@ -1,6 +1,6 @@
 export const sendAudio = async (audioBlob) => {  
     try {
-      const response = await fetch("", {
+      const response = await fetch("/transcribe", {
         method: "POST",
         body: audioBlob,
         headers: {
