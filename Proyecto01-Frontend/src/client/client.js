@@ -66,8 +66,7 @@ export const recognizeEmotion = async (imageFile) => {
                 "Content-Type": "multipart/form-data"
             }
         });
-
-        console.log("Image transcription:", response.data);
+        
         return response.data;
     } catch (error) {
         console.error("Error transcribing image:", error);

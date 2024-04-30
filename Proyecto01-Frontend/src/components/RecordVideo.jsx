@@ -3,11 +3,13 @@ import { CameraButton } from "./CameraButton"
 import { recognizeEmotion } from "../client/client"
 
 export const RecordVideo = ({ children }) => {
-    const videoRef = useRef()
-    const [iscameraOn, setIsCameraOn] = useState(true)
+    const videoRef = useRef();
+    const [iscameraOn, setIsCameraOn] = useState(true);
+    const [emotion, setEmotion] = useState("");
+
     useEffect(() => {
         if (iscameraOn) {
-            startVideo()
+            startVideo();
         } else {
             stopVideo();
         }
@@ -29,11 +31,11 @@ export const RecordVideo = ({ children }) => {
         if (iscameraOn) {
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then((currentStream) => {
-                    videoRef.current.srcObject = currentStream
+                    videoRef.current.srcObject = currentStream;
                 })
                 .catch((err) => {
-                    console.log(err)
-                })
+                    console.log(err);
+                });
         }
     }
 
@@ -58,9 +60,8 @@ export const RecordVideo = ({ children }) => {
                     type: "image/jpg",
                 });
 
-                // Llamar a la función recognizeEmotion con el archivo de imagen
                 const emotions = await recognizeEmotion(file);
-                console.log("Emotions detected:", emotions);
+                setEmotion(emotions.emotions || "");
             }, "image/jpg");
         }
     }
@@ -77,9 +78,18 @@ export const RecordVideo = ({ children }) => {
                     : <img src="/video-camera.svg" alt="video-camera" width={24} />
                 }
             </button> */}
+            {
+                emotion !== "" &&
+                <div className="flex flex-col items-center mb-2">
+                    <img src={`/icons/${emotion}.png`} alt={`${emotion} icon`} />
+                    <span className="text-white font-sm text-center uppercase font-bold">
+                        {emotion}
+                    </span>
+                </div>
+            }
             <div className="flex gap-10 items-start">
                 <div className="flex flex-col items-end">
-                    <video crossOrigin="anonymous" width={500} ref={videoRef} autoPlay></video>
+                    <video crossOrigin="anonymous" width={400} ref={videoRef} autoPlay></video>
                     {children}
                 </div>
             </div>
