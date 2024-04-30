@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 import matplotlib.pyplot as plt
-
+import tempfile
 
 def detectFaces(image):
     """
@@ -19,6 +19,7 @@ def detectFaces(image):
     Returns:
     - resized_faces_rgb (list): List of resized face images in RGB format.
     """
+
     # Load the face cascade classifier
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
@@ -37,7 +38,10 @@ def detectFaces(image):
         face_roi = img[y:y + h, x:x + w]
 
         # Resize the face region to 40x40 directly
-        resized_face_rgb = cv2.resize(face_roi, (40, 40))
+        resized_face_bgr = cv2.resize(face_roi, (40, 40))
+
+        # Convert the BGR image to RGB format
+        resized_face_rgb = cv2.cvtColor(resized_face_bgr, cv2.COLOR_BGR2RGB)
 
         # Append the resized face image to the list
         resized_faces_rgb.append(resized_face_rgb)

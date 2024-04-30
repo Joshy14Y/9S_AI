@@ -1,3 +1,8 @@
 /models
 
 /.idea
+*.pyc
+backend/__pycache__/fer.cpython-311.pyc
+backend/__pycache__/models.cpython-311.pyc
+backend/__pycache__/server.cpython-311.pyc
+Documentacion.docx
