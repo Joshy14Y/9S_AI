@@ -1,4 +1,31 @@
-import axios from 'axios';
+import axios from "axios";
+
+export const handleEndPointToCall = async (endpoint, formData) => {
+    switch (endpoint) {
+        case "snp":
+            return await fetchSandPPrediction(formData);
+        case "ethereum":
+            return await fetchEthereumPrediction(formData);
+        case "bitcoin":
+            return await fetchBitcoinPrediction(formData);
+        case "avocado":
+            return await fetchAvocadoPrediction(formData);
+        case "wine":
+            return await fetchWinePrediction(formData);
+        case "stroke":
+            return await fetchStrokePrediction(formData);
+        case "pokemon":
+            return await fetchPokemonPrediction(formData);
+        case "failure":
+            return await fetchHeartFailurePrediction(formData);
+        case "drug":
+            return await fetchDrugPrediction(formData);
+        case "cancer":
+            return await fetchBreastCancerPrediction(formData);
+        default:
+            return;
+    }
+}
 
 /**
  * Transcribes the audio file provided in the request.
@@ -8,19 +35,18 @@ import axios from 'axios';
 export const transcribeAudio = async (audioFile) => {
     try {
         const formData = new FormData();
-        formData.append('audio', audioFile);
+        formData.append("audio", audioFile);
 
-        const response = await axios.post('http://localhost:5000/transcribe_audio', formData, {
+        const response = await axios.post("http://localhost:5000/transcribe_audio", formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                "Content-Type": "multipart/form-data"
             }
         });
 
         const transcription = response.data.transcription;
-        console.log('Transcription:', transcription);
         return transcription;
     } catch (error) {
-        console.error('Error transcribing audio:', error);
+        console.error("Error transcribing audio:", error);
         return null;
     }
 };
@@ -33,18 +59,18 @@ export const transcribeAudio = async (audioFile) => {
 export const recognizeEmotion = async (imageFile) => {
     try {
         const formData = new FormData();
-        formData.append('file', imageFile);
+        formData.append("file", imageFile);
 
-        const response = await axios.post('http://localhost:5000/recognize_emotion', formData, {
+        const response = await axios.post("http://localhost:5000/recognize_emotion", formData, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                "Content-Type": "multipart/form-data"
             }
         });
 
-        console.log('Image transcription:', response.data);
+        console.log("Image transcription:", response.data);
         return response.data;
     } catch (error) {
-        console.error('Error transcribing image:', error);
+        console.error("Error transcribing image:", error);
         return null;
     }
 };
@@ -54,16 +80,17 @@ export const recognizeEmotion = async (imageFile) => {
  * @param {string} inputDate - The date for which prediction is requested.
  * @returns {Promise<number|null>} Predicted value of S&P index, or null if an error occurs.
  */
-export const fetchSandPPrediction = async (inputDate) => {
+const fetchSandPPrediction = async (formData) => {
+    const { date } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/s&p_prediction', {
+        const response = await axios.get("http://localhost:5000/s&p_prediction", {
             params: {
-                input_date: inputDate
+                input_date: date.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching S&P prediction:', error);
+        console.error("Error fetching S&P prediction:", error);
         return null;
     }
 };
@@ -73,16 +100,17 @@ export const fetchSandPPrediction = async (inputDate) => {
  * @param {string} inputDate - The date for which prediction is requested.
  * @returns {Promise<number|null>} Predicted value of Ethereum cryptocurrency, or null if an error occurs.
  */
-export const fetchEthereumPrediction = async (inputDate) => {
+const fetchEthereumPrediction = async (formData) => {
+    const { date } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/ethereum_prediction', {
+        const response = await axios.get("http://localhost:5000/ethereum_prediction", {
             params: {
-                input_date: inputDate
+                input_date: date.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Ethereum prediction:', error);
+        console.error("Error fetching Ethereum prediction:", error);
         return null;
     }
 };
@@ -92,16 +120,18 @@ export const fetchEthereumPrediction = async (inputDate) => {
  * @param {string} inputDate - The date for which prediction is requested.
  * @returns {Promise<number|null>} Predicted value of Bitcoin cryptocurrency, or null if an error occurs.
  */
-export const fetchBitcoinPrediction = async (inputDate) => {
+const fetchBitcoinPrediction = async (formData) => {
+    const { date } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/bitcoin_prediction', {
+        const response = await axios.get("http://localhost:5000/bitcoin_prediction", {
             params: {
-                input_date: inputDate
+                input_date: date.value
             }
         });
+        console.log(response.data.prediction);
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Bitcoin prediction:', error);
+        console.error("Error fetching Bitcoin prediction:", error);
         return null;
     }
 };
@@ -111,16 +141,17 @@ export const fetchBitcoinPrediction = async (inputDate) => {
  * @param {string} inputDate - The date for which prediction is requested.
  * @returns {Promise<number|null>} Predicted price of avocados, or null if an error occurs.
  */
-export const fetchAvocadoPrediction = async (inputDate) => {
+const fetchAvocadoPrediction = async (formData) => {
+    const { date } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/avocado_prediction', {
+        const response = await axios.get("http://localhost:5000/avocado_prediction", {
             params: {
-                input_date: inputDate
+                input_date: date.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Avocado prediction:', error);
+        console.error("Error fetching Avocado prediction:", error);
         return null;
     }
 };
@@ -130,20 +161,21 @@ export const fetchAvocadoPrediction = async (inputDate) => {
  * @param {number} volatileAcidity - The volatile acidity of the wine.
  * @param {number} density - The density of the wine.
  * @param {number} alcohol - The alcohol content of the wine.
- * @returns {Promise<string|null>} Predicted quality of wine ('Good', 'Bad', or 'Regular'), or null if an error occurs.
+ * @returns {Promise<string|null>} Predicted quality of wine ("Good", "Bad", or "Regular"), or null if an error occurs.
  */
-export const fetchWinePrediction = async (volatileAcidity, density, alcohol) => {
+const fetchWinePrediction = async (formData) => {
+    const { volatileAcidity, density, alcohol } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/wine_prediction', {
+        const response = await axios.get("http://localhost:5000/wine_prediction", {
             params: {
-                volatile_acidity: volatileAcidity,
-                density: density,
-                alcohol: alcohol
+                volatile_acidity: volatileAcidity.value,
+                density: density.value,
+                alcohol: alcohol.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Wine prediction:', error);
+        console.error("Error fetching Wine prediction:", error);
         return null;
     }
 };
@@ -156,19 +188,20 @@ export const fetchWinePrediction = async (volatileAcidity, density, alcohol) => 
  * @param {number} avgGlucoseLevel - The average glucose level of the person.
  * @returns {Promise<boolean|null>} True if the likelihood of stroke is high, false otherwise, or null if an error occurs.
  */
-export const fetchStrokePrediction = async (age, hypertension, heartDisease, avgGlucoseLevel) => {
+const fetchStrokePrediction = async (formData) => {
+    const { age, hypertension, heartDisease, avgGlucoseLevel } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/stroke_prediction', {
+        const response = await axios.get("http://localhost:5000/stroke_prediction", {
             params: {
-                age: age,
-                hypertension: hypertension,
-                heart_disease: heartDisease,
-                avg_glucose_level: avgGlucoseLevel
+                age: age.value,
+                hypertension: hypertension.value,
+                heart_disease: heartDisease.value,
+                avg_glucose_level: avgGlucoseLevel.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Stroke prediction:', error);
+        console.error("Error fetching Stroke prediction:", error);
         return null;
     }
 };
@@ -179,17 +212,18 @@ export const fetchStrokePrediction = async (age, hypertension, heartDisease, avg
  * @param {number} percentageMale - The percentage of male Pokémon in the dataset.
  * @returns {Promise<boolean|null>} True if the Pokémon is predicted to be legendary, false otherwise, or null if an error occurs.
  */
-export const fetchPokemonPrediction = async (baseEggSteps, percentageMale) => {
+const fetchPokemonPrediction = async (formData) => {
+    const { baseEggSteps, percentageMale } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/pokemon_prediction', {
+        const response = await axios.get("http://localhost:5000/pokemon_prediction", {
             params: {
-                base_egg_steps: baseEggSteps,
-                percentage_male: percentageMale
+                base_egg_steps: baseEggSteps.value,
+                percentage_male: percentageMale.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Pokemon prediction:', error);
+        console.error("Error fetching Pokemon prediction:", error);
         return null;
     }
 };
@@ -200,17 +234,18 @@ export const fetchPokemonPrediction = async (baseEggSteps, percentageMale) => {
  * @param {number} time - The time.
  * @returns {Promise<boolean|null>} True if the likelihood of heart failure is high, false otherwise, or null if an error occurs.
  */
-export const fetchHeartFailurePrediction = async (ejectionFraction, time) => {
+const fetchHeartFailurePrediction = async (formData) => {
+    const { ejectionFraction, time } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/heart_failure_prediction', {
+        const response = await axios.get("http://localhost:5000/heart_failure_prediction", {
             params: {
-                ejection_fraction: ejectionFraction,
-                time: time
+                ejection_fraction: ejectionFraction.value,
+                time: time.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Heart Failure prediction:', error);
+        console.error("Error fetching Heart Failure prediction:", error);
         return null;
     }
 };
@@ -224,20 +259,21 @@ export const fetchHeartFailurePrediction = async (ejectionFraction, time) => {
  * @param {number} naToK - The sodium-to-potassium ratio of the patient.
  * @returns {Promise<string|null>} Recommended drug for the patient, or null if an error occurs.
  */
-export const fetchDrugPrediction = async (age, sex, bp, cholesterol, naToK) => {
+const fetchDrugPrediction = async (formData) => {
+    const { age, sex, bp, cholesterol, naToK } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/drug_prediction', {
+        const response = await axios.get("http://localhost:5000/drug_prediction", {
             params: {
-                age: age,
-                sex: sex,
-                bp: bp,
-                cholesterol: cholesterol,
-                na_to_k: naToK
+                age: age.value,
+                sex: sex.value,
+                bp: bp.value,
+                cholesterol: cholesterol.value,
+                na_to_k: naToK.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Drug prediction:', error);
+        console.error("Error fetching Drug prediction:", error);
         return null;
     }
 };
@@ -248,17 +284,18 @@ export const fetchDrugPrediction = async (age, sex, bp, cholesterol, naToK) => {
  * @param {number} perimeterWorst - The perimeter worst.
  * @returns {Promise<boolean|null>} True if the likelihood of breast cancer is high, false otherwise, or null if an error occurs.
  */
-export const fetchBreastCancerPrediction = async (concavePointsWorst, perimeterWorst) => {
+const fetchBreastCancerPrediction = async (formData) => {
+    const { concavePointsWorst, perimeterWorst } = formData;
     try {
-        const response = await axios.get('http://localhost:5000/breast_cancer_prediction', {
+        const response = await axios.get("http://localhost:5000/breast_cancer_prediction", {
             params: {
-                concave_points_worst: concavePointsWorst,
-                perimeter_worst: perimeterWorst
+                concave_points_worst: concavePointsWorst.value,
+                perimeter_worst: perimeterWorst.value
             }
         });
         return response.data.prediction;
     } catch (error) {
-        console.error('Error fetching Breast Cancer prediction:', error);
+        console.error("Error fetching Breast Cancer prediction:", error);
         return null;
     }
 };

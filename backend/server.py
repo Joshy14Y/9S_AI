@@ -6,6 +6,7 @@ import tempfile
 import requests
 import audio_transcription as at
 import fer
+import cv2
 
 app = Flask(__name__)
 CORS(app)
@@ -124,6 +125,7 @@ def stroke_prediction():
                          False otherwise.
     """
     age = int(request.args.get('age'))
+    print(age)
     hypertension = int(request.args.get('hypertension'))
     heart_disease = int(request.args.get('heart_disease'))
     avg_glucose_level = float(request.args.get('avg_glucose_level'))
@@ -261,14 +263,23 @@ def process_image():
         # Get the image file from the request
         image_file = request.files['file']  # Use 'file' instead of 'image'
 
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
+            image_file.save(temp_file)
+            temp_file_path = temp_file.name
+
+        img = cv2.imread(temp_file_path)
+        cv2.imshow('Uploaded Photo', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
         # Detect faces in the image
-        faces = fer.detectFaces(image_file)
+        #faces = fer.detectFaces(image_file)
 
         # Recognize emotions in detected faces
-        emotions = fer.emotionRecognition(faces)
-        print(emotions)
+        #emotions = fer.emotionRecognition(faces)
+        #print(emotions)
 
-        return jsonify({'emotions': emotions})
+        #return jsonify({'emotions': emotions})
 
     except Exception as e:
         print(f"Error processing image: {e}")

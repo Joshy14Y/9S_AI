@@ -27,7 +27,7 @@ class ModelLoader:
         Returns:
         - loaded_models (dict): Dictionary containing loaded machine learning models.
         """
-        directory_path = r"..\..\AI_Project_P1\models"
+        directory_path = r"..\models"
         loaded_models = {}
         for filename in os.listdir(directory_path):
             if filename.endswith('.pkl'):

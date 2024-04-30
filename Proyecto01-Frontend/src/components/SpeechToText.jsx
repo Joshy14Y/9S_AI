@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { sendAudio } from "../services/audio.service";
 
-export const SpeechToText = () => {
+export const SpeechToText = ({ handleSendAudio }) => {
   const [audioURL, setAudioURL] = useState(null);
   const [recording, setRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [audioBlob, setAudioBlob] = useState(null);
 
   const startRecording = () => {
     if (!navigator.mediaDevices) {
@@ -17,10 +17,10 @@ export const SpeechToText = () => {
       .then(stream => {
         const recorder = new MediaRecorder(stream);
         recorder.addEventListener("dataavailable", e => {
-          const audioBlob = new Blob([e.data], { type: "audio/wav" });
-          const url = URL.createObjectURL(audioBlob);
+          const audio = new Blob([e.data], { type: "audio/wav" });
+          setAudioBlob(audio);
+          const url = URL.createObjectURL(audio);
           setAudioURL(url);
-          sendAudio(audioBlob);
         });
 
         const maxRecordingTime = 6000;
@@ -78,6 +78,17 @@ export const SpeechToText = () => {
           }
         </div>
       </button>
+
+      {
+        audioURL &&
+        <button
+          className="text-cyan-600 text-lg rounded-lg font-bold p-2"
+          onClick={() => handleSendAudio(audioBlob)}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+          </svg>
+        </button>
+      }
     </div>
   );
 };

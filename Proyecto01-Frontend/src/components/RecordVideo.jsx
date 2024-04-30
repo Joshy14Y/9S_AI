@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react"
 import { CameraButton } from "./CameraButton"
-import { sendImage } from "../services/camera.service"
+import { recognizeEmotion } from "../client/client"
 
 export const RecordVideo = ({ children }) => {
     const videoRef = useRef()
@@ -16,7 +16,7 @@ export const RecordVideo = ({ children }) => {
     useEffect(() => {
         let intervalId;
         if (iscameraOn) {
-            intervalId = setInterval(captureFrame, 30000);
+            intervalId = setInterval(captureFrame, 10000);
         }
         return () => clearInterval(intervalId);
     }, [iscameraOn]);
@@ -46,15 +46,22 @@ export const RecordVideo = ({ children }) => {
         }
     }
 
-    const captureFrame = () => {
+    const captureFrame = async () => {
         if (iscameraOn && videoRef.current) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
             canvas.width = videoRef.current.videoWidth;
             canvas.height = videoRef.current.videoHeight;
             ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL('image/png');
-            sendImage(dataUrl)
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], "screenshot.jpg", {
+                    type: "image/jpg",
+                });
+
+                // Llamar a la función recognizeEmotion con el archivo de imagen
+                const emotions = await recognizeEmotion(file);
+                console.log("Emotions detected:", emotions);
+            }, "image/jpg");
         }
     }
 
@@ -72,7 +79,7 @@ export const RecordVideo = ({ children }) => {
             </button> */}
             <div className="flex gap-10 items-start">
                 <div className="flex flex-col items-end">
-                    <video crossOrigin="anonymous" width={400} ref={videoRef} autoPlay></video>
+                    <video crossOrigin="anonymous" width={500} ref={videoRef} autoPlay></video>
                     {children}
                 </div>
             </div>
