@@ -8,6 +8,9 @@
     <orderEntry type="jdk" jdkName="JARVIS" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="90b19d14-d217-4cbb-af95-fabdb89e207f" />
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
   </component>
