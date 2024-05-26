@@ -220,6 +220,16 @@ def breast_cancer_prediction():
 
 @app.route('/transcribe_audio', methods=['POST'])
 def transcribe_audio_route():
+    """
+    Endpoint to transcribe an audio file uploaded via a POST request.
+
+    This endpoint accepts an audio file through a POST request, processes it, and returns the transcription as a JSON
+     response. It first saves the uploaded file to a temporary location, then transforms and transcribes the audio using
+     the functions defined in the `tts` module.
+
+    Returns:
+        Response: A JSON response containing the transcription or an error message.
+    """
     try:
         # Get the audio file from the request
         audio_file = request.files['audio']
@@ -244,22 +254,16 @@ def transcribe_audio_route():
         return jsonify({'error': error_msg})
 
 
-
-
 @app.route('/recognize_emotion', methods=['POST'])
 def process_image():
     """
-    Recognizes emotions in the provided image.
+    Endpoint to recognize emotions in an uploaded image file.
 
-    This function extracts the image file from the request and
-    passes it to the `fer.detectFaces` function to detect faces.
-    Then, it utilizes the `fer.emotionRecognition` function to recognize
-    emotions in the detected faces. Finally, it returns the detected
-    emotions as a JSON object.
+    This endpoint accepts an image file through a POST request, detects faces in the image, and recognizes emotions for
+     each detected face. The emotions are returned as a JSON response.
 
     Returns:
-    - emotions (list): List of dictionaries containing emotions recognized
-                       in each detected face.
+        Response: A JSON response containing the recognized emotions or an error message.
     """
     try:
         # Get the image file from the request
@@ -281,6 +285,7 @@ def process_image():
     except Exception as e:
         print(f"Error processing image: {e}")
         return jsonify({'error': str(e)})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
