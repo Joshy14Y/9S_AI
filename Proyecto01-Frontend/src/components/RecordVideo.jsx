@@ -18,7 +18,7 @@ export const RecordVideo = ({ children }) => {
     useEffect(() => {
         let intervalId;
         if (iscameraOn) {
-            intervalId = setInterval(captureFrame, 1000);
+            intervalId = setInterval(captureFrame, 2000);
         }
         return () => clearInterval(intervalId);
     }, [iscameraOn]);

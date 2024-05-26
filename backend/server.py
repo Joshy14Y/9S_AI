@@ -4,9 +4,10 @@ from models import ModelLoader
 import os
 import tempfile
 import requests
-import audio_transcription as at
 import fer
+import tts
 import cv2
+import numpy as np
 
 app = Flask(__name__)
 CORS(app)
@@ -219,63 +220,67 @@ def breast_cancer_prediction():
 
 @app.route('/transcribe_audio', methods=['POST'])
 def transcribe_audio_route():
-    """
-       Transcribes the audio file provided in the request.
-
-       This function extracts the audio file from the request and
-       passes it to the `at.transcribe_audio` function for transcription.
-       The transcription result is then returned as a JSON object.
-
-       Returns:
-       - transcription (str): Transcription of the audio file.
-       """
     try:
         # Get the audio file from the request
         audio_file = request.files['audio']
 
-        # Transcribe the audio file
-        transcription = at.transcribe_audio(audio_file)
+        # Save the file to a temporary location
+        temp_file = tempfile.NamedTemporaryFile(delete=False)
+        audio_file.save(temp_file.name)
+
+        # Transform the audio file
+        transformed_audio_file = tts.transform_audio(temp_file.name)
+
+        # Transcribe the transformed audio file
+        transcription = tts.transcribe_audio(transformed_audio_file.name)
+        print(transcription)
 
         # Return the transcription as JSON response
         return jsonify({'transcription': transcription})
 
     except Exception as e:
-        print(f"Error transcribing audio: {e}")
-        return jsonify({'error': str(e)})
+        error_msg = f"Error transcribing audio: {e}"
+        print(error_msg)
+        return jsonify({'error': error_msg})
+
+
 
 
 @app.route('/recognize_emotion', methods=['POST'])
 def process_image():
     """
-       Recognizes emotions in the provided image.
+    Recognizes emotions in the provided image.
 
-       This function extracts the image file from the request and
-       passes it to the `fer.detectFaces` function to detect faces.
-       Then, it utilizes the `fer.emotionRecognition` function to recognize
-       emotions in the detected faces. Finally, it returns the detected
-       emotions as a JSON object.
+    This function extracts the image file from the request and
+    passes it to the `fer.detectFaces` function to detect faces.
+    Then, it utilizes the `fer.emotionRecognition` function to recognize
+    emotions in the detected faces. Finally, it returns the detected
+    emotions as a JSON object.
 
-       Returns:
-       - emotions (list): List of dictionaries containing emotions recognized
-                          in each detected face.
-       """
+    Returns:
+    - emotions (list): List of dictionaries containing emotions recognized
+                       in each detected face.
+    """
     try:
         # Get the image file from the request
-        image_file = request.files['file']  # Use 'file' instead of 'image'
+        image_file = request.files['file']
+
+        # Read the image file using OpenCV
+        img = cv2.imdecode(np.frombuffer(image_file.read(), np.uint8), -1)
 
         # Detect faces in the image
-        faces = fer.detectFaces(image_file)
+        faces = fer.detectFaces(img)
 
-        # Recognize emotions in detected faces
-        emotions = fer.emotionRecognition(faces)
-        print(emotions)
-
-        return jsonify({'emotions': emotions})
+        if faces:
+            # Recognize emotions in detected faces
+            emotions = fer.emotionRecognition(faces)[0]
+            return jsonify({'emotions': emotions})
+        else:
+            return "None"
 
     except Exception as e:
         print(f"Error processing image: {e}")
         return jsonify({'error': str(e)})
-
 
 if __name__ == '__main__':
     app.run(debug=True)

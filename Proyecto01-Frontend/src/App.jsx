@@ -51,7 +51,7 @@ const App = () => {
 
     const openModal = (word) => {
         switch (word) {
-            case "snp":
+            case "sandp" || "s&p" || "sp500":
                 setFormData({
                     date: {
                         type: "date",
@@ -114,22 +114,22 @@ const App = () => {
             case "stroke":
                 setFormData({
                     age: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the age"
                     },
                     hypertension: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the hypertension"
                     },
                     heartDisease: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the heart disease"
                     },
                     avgGlucoseLevel: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the average glucose level"
                     }
@@ -139,7 +139,7 @@ const App = () => {
             case "pokemon":
                 setFormData({
                     baseEggSteps: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the base egg steps"
                     },
@@ -154,12 +154,12 @@ const App = () => {
             case "failure":
                 setFormData({
                     ejectionFraction: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the ejection fraction"
                     },
                     time: {
-                        type: "time",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the time"
                     }
@@ -174,7 +174,7 @@ const App = () => {
                         placeholder: "Enter the age"
                     },
                     sex: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the sex"
                     },
@@ -184,12 +184,12 @@ const App = () => {
                         placeholder: "Enter the bp"
                     },
                     cholesterol: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the cholesterol"
                     },
                     naToK: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the naToK"
                     }
@@ -199,12 +199,12 @@ const App = () => {
             case "cancer":
                 setFormData({
                     concavePointsWorst: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the concave points worst"
                     },
                     perimeterWorst: {
-                        type: "text",
+                        type: "number",
                         value: "",
                         placeholder: "Enter the perimeter worst"
                     }

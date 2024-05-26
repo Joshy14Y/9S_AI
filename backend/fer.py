@@ -1,97 +1,102 @@
 import cv2
 from PIL import Image
 import numpy as np
-from transformers import AutoImageProcessor, AutoModelForImageClassification
+import tensorflow as tf
 import matplotlib.pyplot as plt
 import tempfile
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import os
 
-def detectFaces(image):
+# Set TensorFlow logging level to only display errors
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0 = all messages, 1 = info, 2 = warnings, 3 = errors
+
+model = tf.keras.models.load_model(r'deep_learning_models/weights/fer.keras')
+
+
+def detectFaces(img):
     """
     Detects faces in the provided image.
 
     This function takes an image file and detects faces using
-    the Haar cascade classifier. It then resizes each detected
-    face to a common size and converts them to RGB format.
+    the Haar cascade classifier. It extracts the detected face
+    regions without any resizing or color conversion.
 
     Parameters:
     - image: Image file containing faces.
 
     Returns:
-    - resized_faces_rgb (list): List of resized face images in RGB format.
+    - face_regions (list): List of face images.
     """
-
     # Load the face cascade classifier
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-    # Convert the image to OpenCV format
-    img = cv2.imdecode(np.frombuffer(image.read(), np.uint8), -1)
-
     # Detect faces in the image
-    faces = face_cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40))
+    faces = face_cascade.detectMultiScale(img, scaleFactor=1.1, minNeighbors=5, minSize=(48, 48))
 
-    # Initialize a list to store resized face images as RGB images
-    resized_faces_rgb = []
+    # Initialize a list to store face images
+    face_regions = []
 
-    # Resize the faces to a common size and convert each to RGB format
+    # Extract the face regions from the original image
     for (x, y, w, h) in faces:
-        # Extract the face region from the original image
-        face_roi = img[y:y + h, x:x + w]
+        face_region = img[y:y + h, x:x + w]
+        face_regions.append(face_region)
 
-        # Resize the face region to 40x40 directly
-        resized_face_bgr = cv2.resize(face_roi, (40, 40))
+    return face_regions
 
-        # Convert the BGR image to RGB format
-        resized_face_rgb = cv2.cvtColor(resized_face_bgr, cv2.COLOR_BGR2RGB)
+def preprocess_images(images, target_size=(48, 48)):
+    processed_images = []
+    for image in images:
+        # Convert to grayscale
+        grayscale_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        # Append the resized face image to the list
-        resized_faces_rgb.append(resized_face_rgb)
+        # Resize the image
+        resized_image = cv2.resize(grayscale_image, target_size)
 
-    return resized_faces_rgb
+        # Normalize the image
+        normalized_image = resized_image / 255.0
+
+        # Convert image to a tensor and expand dimensions to match the input shape of the model
+        expanded_image = tf.expand_dims(tf.convert_to_tensor(normalized_image, dtype=tf.float32), axis=-1)
+
+        processed_images.append(expanded_image)
+
+    return tf.stack(processed_images)
+
 
 def emotionRecognition(faces):
-    """
-    Recognizes emotions in the detected faces.
+    # Define your label mapping based on your dataset
+    label_mapping = {0: 'angry', 1: 'fear', 2: 'happy', 3: 'neutral', 4: 'sad', 5: 'surprise'}
 
-    This function takes a list of detected faces, applies an
-    image classification model to recognize emotions, and
-    returns the predicted emotions for each face.
+    # Preprocess the faces
+    preprocessed_faces = preprocess_images(faces)
 
-    Parameters:
-    - faces (list): List of resized face images in RGB format.
+    # Make predictions for each face
+    predictions = model.predict(preprocessed_faces)
 
-    Returns:
-    - results (list): List of predicted emotions for each face.
-    """
-    # Initialize the processor
-    processor = AutoImageProcessor.from_pretrained("dima806/facial_emotions_image_detection")
-    model = AutoModelForImageClassification.from_pretrained("dima806/facial_emotions_image_detection")
+    # Convert predictions to emotion labels using the label mapping
+    predicted_emotions = [label_mapping[idx] for idx in np.argmax(predictions, axis=1)]
 
-    # Initialize list to store results for each face
-    results = []
+    return predicted_emotions
 
-    # Apply the model to each detected face
-    inputs = processor(images=faces, return_tensors="pt")
 
-    # Perform inference
-    outputs = model(**inputs)
-    logits = outputs.logits
+if __name__ == "__main__":
+    # Path to the image file containing faces
+    image_path = r"C:\Users\Joshua\Downloads\ezgif.com-gif-maker-3.jpg"  # Update this with your image path
 
-    # Get the predicted emotion labels for all faces
-    predicted_class_idxs = logits.argmax(dim=1).tolist()
+    # Read the image file
+    image = cv2.imread(image_path)
 
-    # Map class indices to emotion labels
-    id2label = {
-        "0": "sad",
-        "1": "disgust",
-        "2": "angry",
-        "3": "neutral",
-        "4": "fear",
-        "5": "surprise",
-        "6": "happy"
-    }
+    if image is None:
+        raise ValueError(f"Image at path {image_path} could not be read.")
 
-    # Convert predicted class indices to emotion labels
-    predicted_emotions = [id2label[str(idx)] for idx in predicted_class_idxs]
+    # Detect faces in the image
+    face_regions = detectFaces(image)
 
-    results.extend(predicted_emotions)
-    return results
+    if not face_regions:
+        print("No faces detected in the image.")
+    else:
+        # Perform emotion recognition on detected faces
+        emotions = emotionRecognition(face_regions)
+
+        # Print the detected emotions
+        print("Detected Emotions:", emotions)

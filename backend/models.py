@@ -9,8 +9,8 @@ class ModelLoader:
         """
         Initializes the ModelLoader class.
 
-        This class is responsible for loading machine learning models from
-        pickle files and providing methods for making predictions using those models.
+        This class is responsible for loading machine learning deep_learning_models from
+        pickle files and providing methods for making predictions using those deep_learning_models.
         """
         self.models = self.load_models()
 
@@ -18,14 +18,14 @@ class ModelLoader:
     def load_models():
         directory_path = r"..\..\9S_AI\models"
         """
-        Loads machine learning models from pickle files.
+        Loads machine learning deep_learning_models from pickle files.
 
-        This method loads machine learning models from pickle files located in
-        a specified directory. The models are stored in a dictionary where the
-        keys are the model names and the values are the loaded models.
+        This method loads machine learning deep_learning_models from pickle files located in
+        a specified directory. The deep_learning_models are stored in a dictionary where the
+        keys are the model names and the values are the loaded deep_learning_models.
 
         Returns:
-        - loaded_models (dict): Dictionary containing loaded machine learning models.
+        - loaded_models (dict): Dictionary containing loaded machine learning deep_learning_models.
         """
         directory_path = r"..\models"
         loaded_models = {}
@@ -272,30 +272,29 @@ if __name__ == "__main__":
     # Create an instance of the ModelLoader class
     model_loader = ModelLoader()
 
-    # Test the wine_prediction method
-    wine_prediction = model_loader.wine_prediction(0.5, 0.99, 12.3)
-    print("Wine Prediction:", wine_prediction)
-
-    # Test the stroke_prediction method
-    stroke_prediction = model_loader.stroke_prediction(65, 1, 0, 90)
-    print("Stroke Prediction:", stroke_prediction)
-
-    # Test the pokemon_prediction method
-    pokemon_prediction = model_loader.pokemon_prediction(10000, 60)
-    print("Pokemon Prediction:", pokemon_prediction)
-
-    # Test the heart_failure_prediction method
-    heart_failure_prediction = model_loader.heart_failure_prediction(35, 200)
-    print("Heart Failure Prediction:", heart_failure_prediction)
-
-    # Test the drug_prediction method
-    drug_prediction = model_loader.drug_prediction(50, 1, 120, 200, 10)
-    print("Drug Prediction:", drug_prediction)
-
-    # Test the breast_cancer_prediction method
-    breast_cancer_prediction = model_loader.breast_cancer_prediction(0.05, 100)
-    print("Breast Cancer Prediction:", breast_cancer_prediction)
+    # # Test the wine_prediction method
+    # wine_prediction = model_loader.wine_prediction(0.5, 0.99, 12.3)
+    # print("Wine Prediction:", wine_prediction)
+    #
+    # # Test the stroke_prediction method
+    # stroke_prediction = model_loader.stroke_prediction(65, 1, 0, 90)
+    # print("Stroke Prediction:", stroke_prediction)
+    #
+    # # Test the pokemon_prediction method
+    # pokemon_prediction = model_loader.pokemon_prediction(10000, 60)
+    # print("Pokemon Prediction:", pokemon_prediction)
+    #
+    # # Test the heart_failure_prediction method
+    # heart_failure_prediction = model_loader.heart_failure_prediction(35, 200)
+    # print("Heart Failure Prediction:", heart_failure_prediction)
+    #
+    # # Test the drug_prediction method
+    # drug_prediction = model_loader.drug_prediction(50, 1, 120, 200, 10)
+    # print("Drug Prediction:", drug_prediction)
+    #
+    # # Test the breast_cancer_prediction method
+    # breast_cancer_prediction = model_loader.breast_cancer_prediction(0.05, 100)
+    # print("Breast Cancer Prediction:", breast_cancer_prediction)
 
     # Assuming 'results' is your trained model object
-    # print(
-    #     process_SARIMAX(loaded_models['avocado'], '2024-04-08'))  # Replace 'your_model_name' with the actual model name
+    print(model_loader.process_SARIMAX('s&p', '2024-04-08'))

@@ -12,8 +12,17 @@ export const SpeechToText = ({ handleSendAudio }) => {
       return;
     }
 
+    const constraints = {
+      audio: {
+        sampleRate: 22050, // Sample rate in Hz
+        channelCount: 1,   // Mono (1 channel) or 2 for stereo
+        sampleSize: 16,    // Bit depth
+      },
+      video: false
+    };
+
     navigator.mediaDevices
-      .getUserMedia({ audio: true })
+      .getUserMedia({audio: constraints})
       .then(stream => {
         const recorder = new MediaRecorder(stream);
         recorder.addEventListener("dataavailable", e => {

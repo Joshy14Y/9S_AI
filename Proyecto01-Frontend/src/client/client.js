@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const handleEndPointToCall = async (endpoint, formData) => {
     switch (endpoint) {
-        case "snp":
+        case "s and p" || "s&p":
             return await fetchSandPPrediction(formData);
         case "ethereum":
             return await fetchEthereumPrediction(formData);
